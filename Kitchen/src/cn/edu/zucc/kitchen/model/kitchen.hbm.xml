@@ -1,0 +1,470 @@
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="cn.edu.zucc.kitchen.model">
+	<class name="BeanAdminUser" table="adminuser">
+		<id name="adminUserId" type="int">
+			<column name="adminUserId" />
+			<generator class="assigned" />
+		</id>
+		<property name="adminUserName" type="string"
+			column="adminUserName" />
+		<property name="adminUserPasswd" type="string"
+			column="adminUserPasswd" />
+		<set name="purchase" lazy="false">
+			<key column="adminUserId" />
+			<one-to-many class="BeanFoodPurchase" />
+		</set>
+	</class>
+
+	<class name="BeanFood" table="food">
+		<id name="foodId" type="int">
+			<column name="foodId" />
+			<generator class="assigned" />
+		</id>
+		<property name="foodName" type="string" column="foodName" />
+		<property name="foodPrice" type="double" column="foodPrice" />
+		<property name="foodCount" type="double" column="foodCount" />
+		<property name="foodDescription" type="string"
+			column="foodDescription" />
+		<property name="foodSpecifications" type="string"
+			column="foodSpecifications" />
+		<property name="foodImage" type="blob" column="foodImage" />
+		<set name="ingredients" lazy="false">
+			<key column="foodId" />
+			<one-to-many class="BeanMenuIngredient" />
+		</set>
+		<set name="orderDetails" lazy="false">
+			<key column="foodId" />
+			<one-to-many class="BeanOrderDetail" />
+		</set>
+		<set name="purchase" lazy="false">
+			<key column="foodId" />
+			<one-to-many class="BeanFoodPurchase" />
+		</set>
+		<many-to-one name="foodType" column="foodTypeId"
+			lazy="false" />
+	</class>
+
+	<class name="BeanFoodOrder" table="foodorder">
+		<id name="foodOrderId" type="int">
+			<column name="foodOrderId" />
+			<generator class="assigned" />
+		</id>
+		<property name="deadline" type="timestamp" column="deadline" />
+		<property name="address" type="string" column="address" />
+		<property name="phone" type="string" column="phone" />
+		<property name="status" type="string" column="status" />
+
+		<set name="orderDetails" lazy="false">
+			<key column="foodOrderId" />
+			<one-to-many class="BeanOrderDetail" />
+		</set>
+		<many-to-one name="user" column="userId" lazy="false" />
+	</class>
+
+	<class name="BeanFoodPurchase" table="foodpurchase">
+		<id name="foodPurchaseId" type="int">
+			<column name="foodPurchaseId" />
+			<generator class="assigned" />
+		</id>
+		<property name="purchaseCount" type="double"
+			column="purchaseCount" />
+		<property name="purchaseStatus" type="string"
+			column="purchaseStatus" />
+		<many-to-one name="adminUser" column="adminUserId"
+			lazy="false" />
+		<many-to-one name="food" column="foodId" lazy="false" />
+	</class>
+
+	<class name="BeanFoodType" table="foodtype">
+		<id name="foodTypeId" type="int">
+			<column name="foodTypeId" />
+			<generator class="assigned" />
+		</id>
+		<property name="foodTypeName" type="string"
+			column="foodTypeName" />
+		<property name="foodTypeDescription" type="string"
+			column="foodTypeDescription" />
+
+		<set name="foods" lazy="false">
+			<key column="foodTypeId" />
+			<one-to-many class="BeanFood" />
+		</set>
+	</class>
+
+	<class name="BeanMenu" table="menu">
+		<id name="menuId" type="int">
+			<column name="menuId" />
+			<generator class="assigned" />
+		</id>
+		<property name="menuName" type="string" column="menuName" />
+		<property name="menuDescription" type="string"
+			column="menuDescription" />
+		<property name="menuScoreCount" type="double"
+			column="menuScoreCount" />
+		<property name="menuCollectedCount" type="int"
+			column="menuCollectedCount" />
+		<property name="menuBrowseCount" type="int"
+			column="menuBrowseCount" />
+		<property name="menuImage" type="blob" column="menuImage" />
+		<set name="ingredients" lazy="false">
+			<key column="menuId" />
+			<one-to-many class="BeanMenuIngredient" />
+		</set>
+		<set name="assessmets" lazy="false">
+			<key column="menuId" />
+			<one-to-many class="BeanMenuAssessment" />
+		</set>
+		<set name="steps" lazy="false">
+			<key column="menuId" />
+			<one-to-many class="BeanMenuStep" />
+		</set>
+		<many-to-one name="user" column="userId" lazy="false" />
+	</class>
+
+	<class name="BeanMenuAssessment" table="menuassessment">
+		<id name="menuAssessmentId" type="int">
+			<column name="menuAssessmentId" />
+			<generator class="assigned" />
+		</id>
+		<property name="menuAssessmentContent" type="string"
+			column="menuAssessmentContent" />
+		<property name="isBrowsed" type="boolean" column="isBrowsed" />
+		<property name="isCollected" type="boolean"
+			column="isCollected" />
+		<property name="menuScore" type="double" column="menuScore" />
+		<many-to-one name="user" column="userId" lazy="false" />
+		<many-to-one name="menu" column="menuId" lazy="false" />
+	</class>
+
+	<class name="BeanMenuIngredient" table="menuingredient">
+		<id name="foodIngredientId" type="int">
+			<column name="foodIngredientId" />
+			<generator class="assigned" />
+		</id>
+		<property name="ingredientCount" type="double"
+			column="ingredientCount" />
+		<property name="ingredientUnit" type="string"
+			column="ingredientUnit" />
+		<many-to-one name="menu" column="menuId" lazy="false" />
+		<many-to-one name="food" column="foodId" lazy="false" />
+	</class>
+
+	<class name="BeanMenuStep" table="menustep">
+		<id name="menuStepId" type="int">
+			<column name="menuStepId" />
+			<generator class="assigned" />
+		</id>
+		<property name="menuStepDescription" type="string"
+			column="menuStepDescription" />
+		<property name="menuStepOrderId" type="int"
+			column="menuStepOrderId" />
+		<property name="menuStepImage" type="blob"
+			column="menuStepImage" />
+		<many-to-one name="menu" column="menuId" lazy="false" />
+	</class>
+
+	<class name="BeanOrderDetail" table="orderdetail">
+		<id name="orderDetailId" type="int">
+			<column name="orderDetailId" />
+			<generator class="assigned" />
+		</id>
+		<property name="count" type="double" column="count" />
+		<property name="price" type="double" column="price" />
+		<property name="discount" type="double" column="discount" />
+		<many-to-one name="food" column="foodId" lazy="false" />
+		<many-to-one name="foodOrder" column="foodOrderId"
+			lazy="false" />
+	</class>
+
+	<class name="BeanUser" table="user">
+		<id name="userId" type="int">
+			<column name="userId" />
+			<generator class="assigned" />
+		</id>
+		<property name="userName" type="string" column="userName" />
+		<property name="userSex" type="string" column="userSex" />
+		<property name="userPasswd" type="string" column="userPasswd" />
+		<property name="userPhone" type="string" column="userPhone" />
+		<property name="userEmail" type="string" column="userEmail" />
+		<property name="userCity" type="string" column="userCity" />
+		<property name="userRegisterTime" type="timestamp"
+			column="userRegisterTime" />
+
+		<set name="assessments" lazy="false">
+			<key column="userId" />
+			<one-to-many class="BeanMenuAssessment" />
+		</set>
+		<set name="menus" lazy="false">
+			<key column="userId" />
+			<one-to-many class="BeanMenu" />
+		</set>
+		<set name="foodOrders" lazy="false">
+			<key column="userId" />
+			<one-to-many class="BeanFoodOrder" />
+		</set>
+	</class>
+
+	<class name="ViewMenuinformationEntity"
+		table="view_menuinformation" schema="kitchen">
+		<composite-id>
+			<key-property name="menuId">
+				<column name="menuId" sql-type="int(11)" />
+			</key-property>
+		</composite-id>
+		<property name="userId">
+			<column name="userId" sql-type="int(11)" not-null="true" />
+		</property>
+		<property name="menuName">
+			<column name="menuName" sql-type="varchar(20)" length="20"
+				not-null="true" />
+		</property>
+		<property name="menuDescription">
+			<column name="menuDescription" sql-type="varchar(255)"
+				not-null="true" />
+		</property>
+		<property name="menuScoreCount">
+			<column name="menuScoreCount" sql-type="float" precision="-1"
+				not-null="true" />
+		</property>
+		<property name="menuCollectedCount">
+			<column name="menuCollectedCount" sql-type="int(11)"
+				not-null="true" />
+		</property>
+		<property name="menuBrowseCount">
+			<column name="menuBrowseCount" sql-type="int(11)"
+				not-null="true" />
+		</property>
+		<property name="menuImage">
+			<column name="menuImage" sql-type="longblob" not-null="true" />
+		</property>
+		<property name="foodIngredientId">
+			<column name="foodIngredientId" sql-type="int(11)" />
+		</property>
+		<property name="foodId">
+			<column name="foodId" sql-type="int(11)" not-null="true" />
+		</property>
+		<property name="ingredientCount">
+			<column name="ingredientCount" sql-type="float" precision="-1"
+				not-null="true" />
+		</property>
+		<property name="ingredientUnit">
+			<column name="ingredientUnit" sql-type="varchar(10)"
+				length="10" not-null="true" />
+		</property>
+		<property name="menuAssessmentId">
+			<column name="menuAssessmentId" sql-type="int(11)" />
+		</property>
+		<property name="menuAssessmentContent">
+			<column name="menuAssessmentContent" sql-type="varchar(255)"
+				not-null="true" />
+		</property>
+		<property name="isBrowsed">
+			<column name="isBrowsed" sql-type="tinyint(1)" not-null="true" />
+		</property>
+		<property name="isCollected">
+			<column name="isCollected" sql-type="tinyint(1)"
+				not-null="true" />
+		</property>
+		<property name="menuScore">
+			<column name="menuScore" sql-type="float" precision="-1"
+				not-null="true" />
+		</property>
+		<property name="menuStepId">
+			<column name="menuStepId" sql-type="int(11)" />
+		</property>
+		<property name="menuStepDescription">
+			<column name="menuStepDescription" sql-type="varchar(255)"
+				not-null="true" />
+		</property>
+		<property name="menuStepOrderId">
+			<column name="menuStepOrderId" sql-type="int(11)"
+				not-null="true" />
+		</property>
+		<property name="menuStepImage">
+			<column name="menuStepImage" sql-type="longblob"
+				not-null="true" />
+		</property>
+	</class>
+
+	<class name="ViewFoodInformationEntity"
+		table="view_foodInformation" schema="kitchen">
+		<composite-id>
+			<key-property name="foodId">
+				<column name="foodId" sql-type="int(11)" />
+			</key-property>
+		</composite-id>
+		<property name="foodTypeId">
+			<column name="foodTypeId" sql-type="int(11)" not-null="true" />
+		</property>
+		<property name="foodName">
+			<column name="foodName" sql-type="varchar(20)" length="20"
+				not-null="true" />
+		</property>
+		<property name="foodPrice">
+			<column name="foodPrice" sql-type="float" precision="-1"
+				not-null="true" />
+		</property>
+		<property name="foodCount">
+			<column name="foodCount" sql-type="float" precision="-1"
+				not-null="true" />
+		</property>
+		<property name="foodDescription">
+			<column name="foodDescription" sql-type="varchar(255)"
+				not-null="true" />
+		</property>
+		<property name="foodSpecifications">
+			<column name="foodSpecifications" sql-type="varchar(100)"
+				length="100" not-null="true" />
+		</property>
+		<property name="foodImage">
+			<column name="foodImage" sql-type="longblob" not-null="true" />
+		</property>
+		<property name="foodPurchaseId">
+			<column name="foodPurchaseId" sql-type="int(11)" />
+		</property>
+		<property name="adminUserId">
+			<column name="adminUserId" sql-type="int(11)" not-null="true" />
+		</property>
+		<property name="purchaseCount">
+			<column name="purchaseCount" sql-type="float" precision="-1"
+				not-null="true" />
+		</property>
+		<property name="purchaseStatus">
+			<column name="purchaseStatus" sql-type="varchar(10)"
+				length="10" not-null="true" />
+		</property>
+		<property name="orderDetailId">
+			<column name="orderDetailId" sql-type="int(11)" />
+		</property>
+		<property name="foodOrderId">
+			<column name="foodOrderId" sql-type="int(11)" not-null="true" />
+		</property>
+		<property name="count">
+			<column name="count" sql-type="float" precision="-1"
+				not-null="true" />
+		</property>
+		<property name="price">
+			<column name="price" sql-type="float" precision="-1"
+				not-null="true" />
+		</property>
+		<property name="discount">
+			<column name="discount" sql-type="float" precision="-1"
+				not-null="true" />
+		</property>
+		<property name="foodIngredientId">
+			<column name="foodIngredientId" sql-type="int(11)" />
+		</property>
+		<property name="menuId">
+			<column name="menuId" sql-type="int(11)" not-null="true" />
+		</property>
+		<property name="ingredientCount">
+			<column name="ingredientCount" sql-type="float" precision="-1"
+				not-null="true" />
+		</property>
+		<property name="ingredientUnit">
+			<column name="ingredientUnit" sql-type="varchar(10)"
+				length="10" not-null="true" />
+		</property>
+
+
+	</class>
+
+	<class name="cn.edu.zucc.kitchen.model.ViewUserinformationEntity"
+		table="view_userinformation" schema="kitchen">
+		<composite-id>
+			<key-property name="userid">
+				<column name="userid" sql-type="int(11)" />
+			</key-property>
+		</composite-id>
+		<property name="userName">
+			<column name="userName" sql-type="varchar(20)" length="20"
+				not-null="true" />
+		</property>
+		<property name="userSex">
+			<column name="userSex" sql-type="varchar(10)" length="10"
+				not-null="true" />
+		</property>
+		<property name="userPasswd">
+			<column name="userPasswd" sql-type="varchar(512)" length="512"
+				not-null="true" />
+		</property>
+		<property name="userPhone">
+			<column name="userPhone" sql-type="varchar(20)" length="20"
+				not-null="true" />
+		</property>
+		<property name="userEmail">
+			<column name="userEmail" sql-type="varchar(20)" length="20"
+				not-null="true" />
+		</property>
+		<property name="userCity">
+			<column name="userCity" sql-type="varchar(20)" length="20"
+				not-null="true" />
+		</property>
+		<property name="userRegisterTime">
+			<column name="userRegisterTime" sql-type="datetime"
+				not-null="true" />
+		</property>
+		<property name="menuId">
+			<column name="menuId" sql-type="int(11)" />
+		</property>
+		<property name="menuName">
+			<column name="menuName" sql-type="varchar(20)" length="20"
+				not-null="true" />
+		</property>
+		<property name="menuDescription">
+			<column name="menuDescription" sql-type="varchar(255)"
+				not-null="true" />
+		</property>
+		<property name="menuScoreCount">
+			<column name="menuScoreCount" sql-type="float" precision="-1"
+				not-null="true" />
+		</property>
+		<property name="menuCollectedCount">
+			<column name="menuCollectedCount" sql-type="int(11)"
+				not-null="true" />
+		</property>
+		<property name="menuBrowseCount">
+			<column name="menuBrowseCount" sql-type="int(11)"
+				not-null="true" />
+		</property>
+		<property name="menuImage">
+			<column name="menuImage" sql-type="longblob" not-null="true" />
+		</property>
+		<property name="menuAssessmentId">
+			<column name="menuAssessmentId" sql-type="int(11)" />
+		</property>
+		<property name="menuAssessmentContent">
+			<column name="menuAssessmentContent" sql-type="varchar(255)"
+				not-null="true" />
+		</property>
+		<property name="isBrowsed">
+			<column name="isBrowsed" sql-type="tinyint(1)" not-null="true" />
+		</property>
+		<property name="isCollected">
+			<column name="isCollected" sql-type="tinyint(1)"
+				not-null="true" />
+		</property>
+		<property name="menuScore">
+			<column name="menuScore" sql-type="float" precision="-1"
+				not-null="true" />
+		</property>
+		<property name="foodOrderId">
+			<column name="foodOrderId" sql-type="int(11)" />
+		</property>
+		<property name="deadline">
+			<column name="deadline" sql-type="datetime" not-null="true" />
+		</property>
+		<property name="address">
+			<column name="address" sql-type="varchar(55)" length="55"
+				not-null="true" />
+		</property>
+		<property name="phone">
+			<column name="phone" sql-type="varchar(20)" length="20"
+				not-null="true" />
+		</property>
+		<property name="status">
+			<column name="status" sql-type="varchar(10)" length="10"
+				not-null="true" />
+		</property>
+	</class>
+</hibernate-mapping>  
